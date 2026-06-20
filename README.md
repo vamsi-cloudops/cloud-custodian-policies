@@ -237,7 +237,7 @@ policies:
           - slack://cloud-governance
         transport:
           type: sqs
-          queue: https://sqs.us-east-1.amazonaws.com/123456789/c7n-mailer
+          queue: https://sqs.us-east-1.amazonaws.com/<ACCOUNT_ID>/c7n-mailer
 ```
 
 ### Remediate Open SSH Security Group
@@ -271,7 +271,7 @@ policies:
           - slack://security-alerts
         transport:
           type: sqs
-          queue: https://sqs.us-east-1.amazonaws.com/123456789/c7n-mailer
+          queue: https://sqs.us-east-1.amazonaws.com/<ACCOUNT_ID>/c7n-mailer
 ```
 
 ### Stop Idle EC2 Instances
@@ -300,7 +300,7 @@ policies:
           - slack://cost-governance
         transport:
           type: sqs
-          queue: https://sqs.us-east-1.amazonaws.com/123456789/c7n-mailer
+          queue: https://sqs.us-east-1.amazonaws.com/<ACCOUNT_ID>/c7n-mailer
       - type: stop
         # grace period handled by separate 48h-delay policy
 ```
@@ -313,9 +313,9 @@ Notifications use the `c7n-mailer` Lambda. Configure Slack and email:
 
 ```yaml
 # notifications/slack-notify.yml
-queue_url: https://sqs.us-east-1.amazonaws.com/123456789/c7n-mailer
+queue_url: https://sqs.us-east-1.amazonaws.com/<ACCOUNT_ID>/c7n-mailer
 slack_token: "xoxb-your-slack-token"
-from_address: cloud-governance@company.com
+from_address: cloud-governance@example.com
 contact_tags:
   - owner
   - team
@@ -337,13 +337,13 @@ Define target accounts and assume-role ARNs:
 # deployment/accounts.yml
 accounts:
   - name: dev-account
-    account_id: "111111111111"
-    role: arn:aws:iam::111111111111:role/CloudCustodian
+    account_id: "<YOUR_ACCOUNT_ID>"
+    role: arn:aws:iam::<YOUR_ACCOUNT_ID>:role/CloudCustodian
     regions: [us-east-1, eu-west-1]
 
   - name: prod-account
-    account_id: "222222222222"
-    role: arn:aws:iam::222222222222:role/CloudCustodian
+    account_id: "<YOUR_ACCOUNT_ID>"
+    role: arn:aws:iam::<YOUR_ACCOUNT_ID>:role/CloudCustodian
     regions: [us-east-1, eu-west-1, ap-southeast-1]
 ```
 
@@ -364,7 +364,7 @@ Each target account must have a cross-account role with the minimum permissions 
 
 ```bash
 cd terraform/
-terraform apply -var="management_account_id=123456789012"
+terraform apply -var="management_account_id=<YOUR_ACCOUNT_ID>"
 ```
 
 The role grants read and selective write access:
